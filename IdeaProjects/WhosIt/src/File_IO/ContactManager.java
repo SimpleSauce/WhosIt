@@ -23,14 +23,19 @@ public class ContactManager {
         Path dataDirectory = Paths.get(directory);
         Path dataFile = Paths.get(directory, filename);
 
-        if (Files.notExists(dataDirectory)) {
+        try {
+            if (Files.notExists(dataDirectory)) {
             Files.createDirectories(dataDirectory);
-
+        }} catch (Exception e){
+            System.out.println("Something went wrong.");
         }
 
-        if (Files.notExists(dataFile)) {
-            Files.createFile(dataFile);
-        }
+try{if (Files.notExists(dataFile)) {
+    Files.createFile(dataFile);
+}} catch (Exception e){
+    System.out.println("Something is jacked up.");
+}
+
 
     }
 
