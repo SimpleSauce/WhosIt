@@ -18,6 +18,7 @@ public class ContactManager {
 
     }
 
+
     public static void createMenu() {
         print.println("1. View Contacts.");
         print.println("2. Add a new contact.");
@@ -30,12 +31,11 @@ public class ContactManager {
     public static void addContact() {
         print.println("Type the name of the contact.");
         try {
-            Path
+           Files.write(dataFile, new ArrayList<String>(), StandardOpenOption.APPEND);
         } catch (Exception e) {
             print.println("Whoopsie Something went wrong...Try again!");
             addContact();
         }
-
     }
 
     public static void searchName() {
