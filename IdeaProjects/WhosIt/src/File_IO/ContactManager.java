@@ -20,6 +20,9 @@ public class ContactManager {
         try {
             for (int i = 0; i<Files.readAllLines(dataFile).size(); i++) {
             print.println(Files.readAllLines(dataFile).get(i));
+            print.println("What would you like to do?");
+            print.println("--------------------------");
+            createMenu();
             }
         }
         catch (Exception e){
@@ -36,7 +39,7 @@ public class ContactManager {
         print.println("4. Delete an existing contact.");
         print.println("5. Exit.");
         print.println("Enter an option (1, 2, 3, 4 or 5)");
-        String input = scan.nextLine();
+        String input = scan.next();
         switch(input) {
             case "1": {
                 viewContacts();
@@ -56,14 +59,11 @@ public class ContactManager {
 
     public static void addContact() {
         print.println("Type the name of the contact.");
-        String input = scan.next();
+        String input = scan.nextLine();
         print.println("Please input the phone number for this contact:");
         String phone = scan.next();
-        print.println("Finally, please input this contact's e-mail address:");
-        String email = scan.next();
-        lines = Arrays.asList("Name: " + input + " " + " Phone Number: " + phone);
-        try
-        {
+        lines = Arrays.asList("Name: " + input + " " + "Phone Number: " + phone);
+        try {
            Files.write(dataFile, lines, StandardOpenOption.APPEND);
 
            print.println("Add another contact?");
@@ -81,7 +81,28 @@ public class ContactManager {
     }
 
     public static void searchName() {
+        int i = 0;
         print.println("Type the name of the contact to search.");
+        String input = scan.next().toLowerCase();
+        try {
+            for(String line : Files.readAllLines(dataFile)) {
+                if (line.toLowerCase().contains(input)) {
+                    print.println(Files.readAllLines(dataFile).get(i));
+                    print.println("Would you like to search for another contact?");
+                    String choice = scan.next();
+                    if (choice.equalsIgnoreCase("Y")) {
+                        searchName();
+                    } else {
+                        createMenu();
+                    }
+                } else {i++;}
+            }
+
+
+        } catch (Exception e) {
+
+        }
+
     }
 
     public static void deleteContact() {
