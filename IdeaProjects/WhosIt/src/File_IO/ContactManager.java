@@ -15,7 +15,7 @@ public class ContactManager {
     private static List <String> lines;
 //    private static FileReader reader = new FileReader(dataFile);
 
-    private static void viewContacts() {
+    private static void viewContacts() throws IOException {
         lines = Arrays.asList();
 
         try {
@@ -29,7 +29,8 @@ public class ContactManager {
                     print.println(Files.readAllLines(dataFile).get(i));
                     print.println("What would you like to do?");
                     print.println("--------------------------");
-//                    createMenu();
+                    createMenu();
+                    print.println(Files.readAllLines(dataFile).size());
                 }
             }
         }
@@ -40,7 +41,7 @@ public class ContactManager {
     }
 
 
-    public static void createMenu() {
+    public static void createMenu() throws IOException {
         print.println("1. View Contacts.");
         print.println("2. Add a new contact.");
         print.println("3. Search a contact by name.");
@@ -72,10 +73,10 @@ public class ContactManager {
         String lName = scan.next();
         print.println("Please input the phone number for this contact:");
         String phone = scan.next();
-        lines = Arrays.asList("Name: " + fName + " " + lName + " Phone Number: " + phone);
+        String phoneResult = phoneNumberParse(phone);
+        lines = Arrays.asList("Name: " + fName + " " + lName + "| Phone Number: " + phoneResult);
         try {
            Files.write(dataFile, lines, StandardOpenOption.APPEND);
-
            print.println("Add another contact?");
            String input2 = scan.next();
             if (input2.equalsIgnoreCase("Y")){addContact();}
@@ -115,14 +116,16 @@ public class ContactManager {
 
     }
 
-    public static void deleteContact() {
+    public static void deleteContact() throws IOException {
         int i = 0;
         print.println("Type the name of the contact that you want to delete.");
         String input = scan.next().toLowerCase();
+        lines = Files.readAllLines(dataFile);
         try {
-            for(String line : Files.readAllLines(dataFile)) {
+            for(String line : lines) {
                 if (line.toLowerCase().contains(input)) {
-                    (Files.readAllLines(dataFile).get(i)).equals("");
+                    lines.remove(line);
+                    Files.write(dataFile, lines);
                     print.println("Would you like to search for another contact?");
                     String choice = scan.next();
                     if (choice.equalsIgnoreCase("Y")) {
@@ -135,11 +138,20 @@ public class ContactManager {
 
 
         } catch (Exception e) {
-
+            print.println("Delete messed up! Let's try that again.");
+            createMenu();
         }
     }
 
-    public static void main(String[] args) {
+    public static String phoneNumberParse(String number) {
+        String part1 = number.substring(0, 3);
+        String part2 = number.substring(3, 6);
+        String part3 = number.substring(6, 10);
+        String result = (part1 + "-" + part2 + "-" + part3);
+        return result;
+    }
+
+    public static void main(String[] args) throws IOException {
 
         try {
             if (Files.notExists(dataDirectory)) {
